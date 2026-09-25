@@ -9,6 +9,7 @@ export interface Task {
   workEffort: CriterionValue;
   createdAt: number;
   completed?: boolean;
+  parentId?: string;
 }
 
 export type TaskDraft = Pick<Task, 'title' | 'description' | 'expectation' | 'timeEffort' | 'workEffort'>;

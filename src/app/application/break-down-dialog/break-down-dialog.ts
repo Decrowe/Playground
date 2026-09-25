@@ -21,9 +21,9 @@ interface SubTaskFormValue {
 function createSubTaskGroup(): FormGroup<SubTaskFormValue> {
   return new FormGroup<SubTaskFormValue>({
     title: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    expectation: new FormControl(0, { nonNullable: true, validators: [criterionRangeValidator()] }),
-    timeEffort: new FormControl(0, { nonNullable: true, validators: [criterionRangeValidator()] }),
-    workEffort: new FormControl(0, { nonNullable: true, validators: [criterionRangeValidator()] })
+    expectation: new FormControl(3, { nonNullable: true, validators: [criterionRangeValidator()] }),
+    timeEffort: new FormControl(3, { nonNullable: true, validators: [criterionRangeValidator()] }),
+    workEffort: new FormControl(3, { nonNullable: true, validators: [criterionRangeValidator()] })
   });
 }
 

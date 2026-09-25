@@ -1,5 +1,5 @@
 <mat-toolbar color="primary" class="page-toolbar">
-  <span>Decision Maker</span>
+  <span class="page-title">Decision Maker</span>
   <span class="spacer"></span>
   <button mat-button type="button" data-testid="reset-tasks-button" (click)="facade.resetAll()">
     <mat-icon>delete_sweep</mat-icon>
@@ -14,10 +14,11 @@
 <main class="page-content">
   <div class="page-card">
     <app-task-table
-      [tasks]="facade.tasks()"
+      [nodes]="facade.tasks()"
       (breakDown)="facade.breakDownTask($event)"
       (edit)="facade.editTask($event)"
       (complete)="facade.completeTask($event)"
+      (create)="facade.createTask()"
     />
   </div>
 </main>

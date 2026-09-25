@@ -50,15 +50,15 @@ export class TaskFormDialog {
       validators: [Validators.required, notBlankValidator]
     }),
     description: new FormControl(this.data?.description ?? '', { nonNullable: true }),
-    expectation: new FormControl(this.data?.expectation ?? 0, {
+    expectation: new FormControl(this.data?.expectation ?? 3, {
       nonNullable: true,
       validators: [criterionRangeValidator()]
     }),
-    timeEffort: new FormControl(this.data?.timeEffort ?? 0, {
+    timeEffort: new FormControl(this.data?.timeEffort ?? 3, {
       nonNullable: true,
       validators: [criterionRangeValidator()]
     }),
-    workEffort: new FormControl(this.data?.workEffort ?? 0, {
+    workEffort: new FormControl(this.data?.workEffort ?? 3, {
       nonNullable: true,
       validators: [criterionRangeValidator()]
     })

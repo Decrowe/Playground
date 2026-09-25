@@ -25,7 +25,7 @@
       <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
         <input matSliderThumb formControlName="expectation" />
       </mat-slider>
-      <span class="criterion-value">{{ criterionLabel(form.controls.expectation.value) }}</span>
+      <span class="criterion-value">{{ criterionLabel('expectation', form.controls.expectation.value) }}</span>
     </div>
     <p class="criterion-hint" data-testid="hint-expectation">{{ criterionQuestions.expectation }}</p>
 
@@ -34,7 +34,7 @@
       <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
         <input matSliderThumb formControlName="timeEffort" />
       </mat-slider>
-      <span class="criterion-value">{{ criterionLabel(form.controls.timeEffort.value) }}</span>
+      <span class="criterion-value">{{ criterionLabel('timeEffort', form.controls.timeEffort.value) }}</span>
     </div>
     <p class="criterion-hint" data-testid="hint-time-effort">{{ criterionQuestions.timeEffort }}</p>
 
@@ -43,7 +43,7 @@
       <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
         <input matSliderThumb formControlName="workEffort" />
       </mat-slider>
-      <span class="criterion-value">{{ criterionLabel(form.controls.workEffort.value) }}</span>
+      <span class="criterion-value">{{ criterionLabel('workEffort', form.controls.workEffort.value) }}</span>
     </div>
     <p class="criterion-hint" data-testid="hint-work-effort">{{ criterionQuestions.workEffort }}</p>
 

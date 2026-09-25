@@ -19,6 +19,7 @@ function isTask(value: unknown): value is Task {
     typeof candidate['title'] === 'string' &&
     (candidate['description'] === undefined || typeof candidate['description'] === 'string') &&
     (candidate['completed'] === undefined || typeof candidate['completed'] === 'boolean') &&
+    (candidate['parentId'] === undefined || typeof candidate['parentId'] === 'string') &&
     isCriterionValue(candidate['expectation']) &&
     isCriterionValue(candidate['timeEffort']) &&
     isCriterionValue(candidate['workEffort']) &&

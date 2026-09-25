@@ -78,16 +78,18 @@ describe('TaskStore', () => {
     expect(repository.saveCalls.at(-1)).toEqual([]);
   });
 
-  it('replaces the source task when breaking it down', () => {
+  it('creates subtasks linked to the parent, keeping the parent task', () => {
     const { store } = setup([TASK_A]);
     store.breakDown('a', [
       { title: 'Sub 1', expectation: 1, timeEffort: 1, workEffort: 1 },
       { title: 'Sub 2', expectation: 2, timeEffort: 2, workEffort: 2 }
     ]);
     const tasks = store.tasks();
-    expect(tasks.length).toBe(2);
-    expect(tasks.some((task) => task.id === 'a')).toBe(false);
-    expect(new Set(tasks.map((task) => task.id)).size).toBe(2);
+    expect(tasks.length).toBe(3);
+    expect(tasks.some((task) => task.id === 'a')).toBe(true);
+    const subtasks = tasks.filter((task) => task.parentId === 'a');
+    expect(subtasks.length).toBe(2);
+    expect(new Set(subtasks.map((task) => task.id)).size).toBe(2);
   });
 
   it('rejects breaking down with an empty list', () => {

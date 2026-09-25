@@ -47,9 +47,9 @@ export class TaskStore {
     }
     const now = Date.now();
     const created = subTasks.map(
-      (draft) => ({ ...draft, id: createId(), createdAt: now, completed: false }) satisfies Task
+      (draft) => ({ ...draft, id: createId(), createdAt: now, completed: false, parentId: id }) satisfies Task
     );
-    this.#persist([...current.filter((task) => task.id !== id), ...created]);
+    this.#persist([...current, ...created]);
   }
 
   clear(): void {

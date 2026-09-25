@@ -6,8 +6,9 @@
       <p class="source-task__description" data-testid="source-task-description">{{ data.description }}</p>
     }
     <p class="source-task__criteria">
-      Expectation: {{ criterionLabel(data.expectation) }} &middot; Time Effort:
-      {{ criterionLabel(data.timeEffort) }} &middot; Work Effort: {{ criterionLabel(data.workEffort) }}
+      Expectation: {{ criterionLabel('expectation', data.expectation) }} &middot; Time Effort:
+      {{ criterionLabel('timeEffort', data.timeEffort) }} &middot; Work Effort:
+      {{ criterionLabel('workEffort', data.workEffort) }}
     </p>
     <p class="rating-preview" [class]="sourceRatingClass">Rating: <strong>{{ sourceRating }}</strong></p>
   </section>
@@ -37,7 +38,7 @@
           <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
             <input matSliderThumb formControlName="expectation" />
           </mat-slider>
-          <span class="criterion-value">{{ criterionLabel(group.controls.expectation.value) }}</span>
+          <span class="criterion-value">{{ criterionLabel('expectation', group.controls.expectation.value) }}</span>
         </div>
 
         <div class="criterion-row">
@@ -45,7 +46,7 @@
           <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
             <input matSliderThumb formControlName="timeEffort" />
           </mat-slider>
-          <span class="criterion-value">{{ criterionLabel(group.controls.timeEffort.value) }}</span>
+          <span class="criterion-value">{{ criterionLabel('timeEffort', group.controls.timeEffort.value) }}</span>
         </div>
 
         <div class="criterion-row">
@@ -53,7 +54,7 @@
           <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
             <input matSliderThumb formControlName="workEffort" />
           </mat-slider>
-          <span class="criterion-value">{{ criterionLabel(group.controls.workEffort.value) }}</span>
+          <span class="criterion-value">{{ criterionLabel('workEffort', group.controls.workEffort.value) }}</span>
         </div>
       </div>
     }

@@ -20,13 +20,23 @@ describe('calculateRating', () => {
 });
 
 describe('criterionLabel', () => {
-  it('maps each value to its label', () => {
-    expect(criterionLabel(0)).toBe('Very Bad');
-    expect(criterionLabel(1)).toBe('Bad');
-    expect(criterionLabel(2)).toBe('Sufficient');
-    expect(criterionLabel(3)).toBe('Satisfactory');
-    expect(criterionLabel(4)).toBe('Good');
-    expect(criterionLabel(5)).toBe('Very Good');
+  it('uses likelihood wording for expectation', () => {
+    expect(criterionLabel('expectation', 0)).toBe('Very Unlikely');
+    expect(criterionLabel('expectation', 1)).toBe('Unlikely');
+    expect(criterionLabel('expectation', 2)).toBe('Somewhat Unlikely');
+    expect(criterionLabel('expectation', 3)).toBe('Somewhat Likely');
+    expect(criterionLabel('expectation', 4)).toBe('Likely');
+    expect(criterionLabel('expectation', 5)).toBe('Very Likely');
+  });
+
+  it('uses duration wording for time effort', () => {
+    expect(criterionLabel('timeEffort', 0)).toBe('Very Long');
+    expect(criterionLabel('timeEffort', 5)).toBe('Very Short');
+  });
+
+  it('uses difficulty wording for work effort', () => {
+    expect(criterionLabel('workEffort', 0)).toBe('Very Hard');
+    expect(criterionLabel('workEffort', 5)).toBe('Very Easy');
   });
 });
 

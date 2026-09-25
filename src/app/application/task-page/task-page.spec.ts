@@ -6,6 +6,7 @@ import { InMemoryTaskRepository } from '../../infrastructure/in-memory-task.repo
 import { TASK_REPOSITORY } from '../../domain/ports/task-repository.port';
 import { Task } from '../../domain/models/task';
 import { TaskStore } from '../../domain/task-store';
+import { TaskFacade } from '../task-facade';
 import { TaskPage } from './task-page';
 
 const TASK_A: Task = { id: 'a', title: 'Alpha', expectation: 5, timeEffort: 5, workEffort: 5, createdAt: 1 };
@@ -41,7 +42,17 @@ describe('TaskPage', () => {
     expect(titles(fixture)).toEqual(['X']);
   });
 
-  it('breaks down a task via the dialog', async () => {
+  it('creates a task via the empty-state button', async () => {
+    const { fixture, open } = createFixture([], { title: 'X', expectation: 5, timeEffort: 5, workEffort: 5 });
+    (fixture.nativeElement.querySelector('[data-testid="empty-state-new-task-button"]') as HTMLElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(open).toHaveBeenCalled();
+    expect(titles(fixture)).toEqual(['X']);
+  });
+
+  it('breaks a task into subtasks, keeping the parent as an expandable row', async () => {
     const { fixture } = createFixture([TASK_A], [
       { title: 'Sub 1', expectation: 1, timeEffort: 1, workEffort: 1 },
       { title: 'Sub 2', expectation: 2, timeEffort: 2, workEffort: 2 }
@@ -51,9 +62,36 @@ describe('TaskPage', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    const rendered = titles(fixture);
-    expect(rendered.length).toBe(2);
-    expect(rendered).not.toContain('Alpha');
+    expect(titles(fixture).length).toBe(1);
+    expect(titles(fixture)[0]).toContain('Alpha');
+    const store = TestBed.inject(TaskStore);
+    expect(store.tasks().length).toBe(3);
+
+    const expandButton = fixture.nativeElement.querySelector('[data-testid="expand-toggle-button"]') as HTMLElement;
+    expect(expandButton).toBeTruthy();
+    expandButton.click();
+    fixture.detectChanges();
+
+    const expandedTitles = titles(fixture);
+    expect(expandedTitles.length).toBe(3);
+    expect(expandedTitles.some((title) => title.includes('Sub 1'))).toBe(true);
+    expect(expandedTitles.some((title) => title.includes('Sub 2'))).toBe(true);
+
+    const editButton = fixture.nativeElement.querySelector('[data-testid="edit-task-button"]') as HTMLButtonElement;
+    expect(editButton.disabled).toBe(true);
+  });
+
+  it('does not open the edit dialog for an origin task with subtasks', async () => {
+    const { fixture, open } = createFixture([TASK_A], [
+      { title: 'Sub 1', expectation: 1, timeEffort: 1, workEffort: 1 }
+    ]);
+    (fixture.nativeElement.querySelector('[data-testid="break-down-button"]') as HTMLElement).click();
+    await fixture.whenStable();
+    open.mockClear();
+
+    await TestBed.inject(TaskFacade).editTask('a');
+
+    expect(open).not.toHaveBeenCalled();
   });
 
   it('does not mutate state when the dialog is cancelled', async () => {

@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { Task } from '../domain/models/task';
 import { TaskStore } from '../domain/task-store';
+import { buildTaskTree, filterTaskTree, TaskNode } from '../domain/task-tree';
 import { BreakDownDialog } from './break-down-dialog/break-down-dialog';
 import { ConfirmDialog } from './confirm-dialog/confirm-dialog';
 import { TaskFormDialog } from './task-form-dialog/task-form-dialog';
@@ -13,7 +14,9 @@ export class TaskFacade {
   readonly #store = inject(TaskStore);
   readonly #dialog = inject(MatDialog);
 
-  readonly tasks = computed(() => this.#store.sortedTasks().filter((task) => !task.completed));
+  readonly tasks = computed<TaskNode[]>(() =>
+    filterTaskTree(buildTaskTree(this.#store.tasks()), (task) => !task.completed)
+  );
 
   async createTask(): Promise<void> {
     const result = await firstValueFrom(this.#dialog.open(TaskFormDialog, { width: '420px' }).afterClosed());
@@ -24,7 +27,7 @@ export class TaskFacade {
 
   async editTask(id: string): Promise<void> {
     const task = this.#findTask(id);
-    if (!task) {
+    if (!task || this.#hasSubtasks(id)) {
       return;
     }
     const result = await firstValueFrom(
@@ -72,5 +75,10 @@ export class TaskFacade {
 
   #findTask(id: string): Task | undefined {
     return this.#store.tasks().find((task) => task.id === id);
+  }
+
+  // An origin task's rating is derived from its subtasks, so it can't be edited directly.
+  #hasSubtasks(id: string): boolean {
+    return this.#store.tasks().some((task) => task.parentId === id);
   }
 }

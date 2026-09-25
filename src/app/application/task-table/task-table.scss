@@ -1,0 +1,67 @@
+.empty-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 24px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+table[data-testid='task-table'] {
+  width: 100%;
+}
+
+th.mat-mdc-header-cell {
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-title-small);
+}
+
+th.mat-mdc-header-cell mat-icon {
+  vertical-align: middle;
+}
+
+td.mat-mdc-cell,
+th.mat-mdc-header-cell {
+  padding: 12px 16px;
+}
+
+td[data-testid='task-title'] {
+  font-weight: 500;
+}
+
+.task-description {
+  font-weight: 400;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+.criterion-icon {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+td[data-testid='task-rating'] {
+  font-weight: 700;
+}
+
+tr[data-testid='task-row'] {
+  transition: filter 0.15s ease;
+}
+
+tr[data-testid='task-row']:hover {
+  filter: brightness(0.97);
+}
+
+td.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.row-action {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease;
+}
+.row-action--visible {
+  opacity: 1;
+  visibility: visible;
+}

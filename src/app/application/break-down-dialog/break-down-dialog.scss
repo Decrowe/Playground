@@ -1,0 +1,73 @@
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 60vh;
+}
+
+.source-task {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background-color: var(--mat-sys-surface-container-high);
+}
+
+.source-task__criteria {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.source-task__description {
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+.rating-preview {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.sub-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sub-task-row {
+  padding: 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+}
+
+.sub-task-row__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.criterion-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+}
+
+.criterion-label {
+  flex: 0 0 110px;
+  font: var(--mat-sys-body-medium);
+}
+
+.criterion-slider {
+  flex: 1 1 auto;
+}
+
+.criterion-value {
+  flex: 0 0 100px;
+  text-align: right;
+  font-weight: 500;
+  white-space: nowrap;
+}

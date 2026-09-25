@@ -1,0 +1,79 @@
+<h2 mat-dialog-title>Break down task</h2>
+<mat-dialog-content [formGroup]="form" class="dialog-content">
+  <section class="source-task" data-testid="source-task">
+    <h3>{{ data.title }}</h3>
+    @if (data.description) {
+      <p class="source-task__description" data-testid="source-task-description">{{ data.description }}</p>
+    }
+    <p class="source-task__criteria">
+      Expectation: {{ criterionLabel(data.expectation) }} &middot; Time Effort:
+      {{ criterionLabel(data.timeEffort) }} &middot; Work Effort: {{ criterionLabel(data.workEffort) }}
+    </p>
+    <p class="rating-preview" [class]="sourceRatingClass">Rating: <strong>{{ sourceRating }}</strong></p>
+  </section>
+
+  <div formArrayName="subTasks" class="sub-tasks">
+    @for (group of subTasks.controls; track group; let i = $index) {
+      <div [formGroupName]="i" class="sub-task-row" data-testid="sub-task-row">
+        <div class="sub-task-row__header">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" />
+          </mat-form-field>
+          <button
+            mat-icon-button
+            type="button"
+            data-testid="remove-sub-task-button"
+            [disabled]="subTasks.length <= 1"
+            [attr.aria-label]="'Remove sub-task ' + (i + 1)"
+            (click)="removeSubTask(i)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
+        <div class="criterion-row">
+          <span class="criterion-label">Expectation</span>
+          <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
+            <input matSliderThumb formControlName="expectation" />
+          </mat-slider>
+          <span class="criterion-value">{{ criterionLabel(group.controls.expectation.value) }}</span>
+        </div>
+
+        <div class="criterion-row">
+          <span class="criterion-label">Time Effort</span>
+          <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
+            <input matSliderThumb formControlName="timeEffort" />
+          </mat-slider>
+          <span class="criterion-value">{{ criterionLabel(group.controls.timeEffort.value) }}</span>
+        </div>
+
+        <div class="criterion-row">
+          <span class="criterion-label">Work Effort</span>
+          <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
+            <input matSliderThumb formControlName="workEffort" />
+          </mat-slider>
+          <span class="criterion-value">{{ criterionLabel(group.controls.workEffort.value) }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <button mat-button type="button" data-testid="add-sub-task-button" (click)="addSubTask()">
+    <mat-icon>add</mat-icon>
+    Add sub-task
+  </button>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" data-testid="dialog-cancel" (click)="cancel()">Cancel</button>
+  <button
+    mat-flat-button
+    type="button"
+    data-testid="dialog-confirm"
+    [disabled]="form.invalid"
+    (click)="confirm()"
+  >
+    Break down
+  </button>
+</mat-dialog-actions>

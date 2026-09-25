@@ -1,0 +1,45 @@
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 260px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.criterion-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+}
+
+.criterion-label {
+  flex: 0 0 110px;
+  font: var(--mat-sys-body-medium);
+}
+
+.criterion-slider {
+  flex: 1 1 auto;
+}
+
+.criterion-value {
+  flex: 0 0 100px;
+  text-align: right;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.criterion-hint {
+  margin: 0 0 8px 0;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+.rating-preview {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+}

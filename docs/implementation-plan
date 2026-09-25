@@ -1,0 +1,76 @@
+# Plan: Decision Maker App (Angular 21 + Material)
+
+Build the task prioritization app from `app-description.md` in three layers (application / domain / infrastructure), driven by the criteria in `acceptance-criteria.md`. Domain logic stays pure and signal-based, data access goes through a port so tests can use a mock adapter. Work is grouped into 7 phases; each phase ends with green tests for its own AC block.
+
+## Phase 1 – Setup & cleanup *(blocks everything)*
+
+1. Install Angular Material/CDK via `ng add @angular/material` (adds theme, `provideAnimationsAsync`, roboto/icons).
+2. Remove routing: delete `src/app/app.routes.ts`, drop `provideRouter` from `src/app/app.config.ts`, drop `RouterOutlet` from `src/app/app.ts` and `router-outlet` from `src/app/app.html`. Satisfies AC-10.2.
+3. Rewrite `src/app/app.spec.ts` (its current `Hello, Playground` assertion will fail after step 2).
+4. Create folder skeleton `src/app/domain`, `src/app/infrastructure`, `src/app/application`.
+5. Define the 5 rating colors as CSS custom properties in `src/styles.scss` (`--rating-very-low` … `--rating-very-high`) plus the `rating--*` classes from AC-0.3.
+
+## Phase 2 – Domain *(depends on 1; steps 6–8 parallel)*
+
+6. `domain/models/task.ts`: `CriterionValue`, `Task`, `TaskDraft` (task without `id`/`createdAt`), `RatingLevel` enum — exactly as specified in AC-0.1.
+7. `domain/rating.ts`: `calculateRating`, `getRatingLevel`, `criterionLabel`, `ratingLevelClass` → tests for **AC-1.x, AC-3.x**.
+8. `domain/sorting.ts`: `sortByRating` (rating desc, tie-break `createdAt` asc, non-mutating) → tests for **AC-2.x**.
+9. `domain/ports/task-repository.port.ts`: `TaskRepositoryPort` interface (`load()`, `save(tasks)`) + `TASK_REPOSITORY` InjectionToken. This is the port required by the *Testing* section of the description.
+10. `domain/task-store.ts`: `providedIn: 'root'`, `inject(TASK_REPOSITORY)`, private `#tasks = signal<Task[]>()`, public `tasks`/`sortedTasks` as `computed()`, methods `add`, `update`, `remove`, `breakDown`, all immutable + persisting → tests for **AC-4.x** (run with the mock adapter, no `localStorage`).
+
+## Phase 3 – Infrastructure *(depends on 9; parallel with Phase 4)*
+
+11. `infrastructure/local-storage-task.repository.ts`: key `decision-maker.tasks`, `JSON.parse` in try/catch, per-record schema guard (`isTask`) filtering invalid entries → tests for **AC-5.1 … AC-5.5**.
+12. `infrastructure/in-memory-task.repository.ts`: mock adapter implementing the same port, seedable, records `save` calls — used by all store/component tests to keep mock and real implementation in sync.
+13. Provide `{ provide: TASK_REPOSITORY, useClass: LocalStorageTaskRepository }` in `src/app/app.config.ts`.
+
+## Phase 4 – UI components *(depends on 2+6; steps 14–16 parallel with each other)*
+
+14. `application/task-table/`: `mat-table` with columns title / expectation / time effort / work effort / rating / actions, `input()` for tasks, `output()` `breakDown`, `edit`, `delete`, `ChangeDetectionStrategy.OnPush`, row class via `[class]` binding from `ratingLevelClass`, hover handled by a `hoveredId` signal toggled through `(mouseenter)`/`(mouseleave)`/`(focusin)`/`(focusout)` in the `host`/row bindings → tests for **AC-6.x**.
+15. `application/task-form-dialog/`: reactive form (`title`, three criteria), each criterion a `mat-slider` (min 0, max 5, step 1, `discrete`) with the label from `criterionLabel` shown below, live rating preview via `computed()`, confirm disabled while invalid → tests for **AC-7.x**.
+16. `application/break-down-dialog/`: read-only `source-task` block, `FormArray` of sub-task rows (start with 1, add/remove, remove disabled when only one row), confirm returns `TaskDraft[]` → tests for **AC-8.x**.
+
+## Phase 5 – Integration *(depends on 3, 4)*
+
+17. `application/task-facade.ts`: injects `TaskStore` + `MatDialog`, exposes `tasks`, and methods `createTask()`, `editTask(id)`, `deleteTask(id)`, `breakDownTask(id)` that open dialogs and only mutate the store on a defined result.
+18. `application/task-page/`: toolbar with `new-task-button`, `app-task-table` bound to `facade.tasks()`, wiring of the three outputs. Render it from `src/app/app.ts` → tests for **AC-9.x**.
+19. Delete confirmation via a small `mat-dialog` confirm (AC-6.2 in the old numbering / AC-9.3 cancel path).
+
+## Phase 6 – Cross-cutting
+
+20. Accessibility: `aria-label` on all icon-only buttons (incl. task title), dialog focus trap check → **AC-10.5**.
+21. Architecture guard: a plain unit test that reads the files under `domain/` and asserts no import path contains `application/` or `infrastructure/` → **AC-10.3**.
+22. Sync `acceptance-criteria.md` with the decisions: AC-7.1/AC-7.4 rewritten for `mat-slider` (`MatSliderHarness`, clamping instead of select options), AC-6.6 rewritten to assert the `row--hovered` class toggle.
+
+## Phase 7 – Verification
+
+23. `npm test` — all AC-tagged suites green; check that unit suites (`[U]`) require no `TestBed`.
+24. `npm run build` — production build without budget errors.
+25. Manual smoke run via `npm start`: create 3 tasks with different ratings, verify order + colors, hover reveals the break-down button, break down the top task, reload the page and confirm persistence.
+
+## Relevant files
+
+- `src/app/app.config.ts` — remove `provideRouter`, add Material animations provider and `TASK_REPOSITORY` binding
+- `src/app/app.ts` / `src/app/app.html` — replace `RouterOutlet` with `app-task-page`
+- `src/app/app.routes.ts` — delete
+- `src/app/app.spec.ts` — rewrite (currently asserts removed markup)
+- `src/styles.scss` — Material theme + `rating--*` color classes
+- `src/app/domain/**` — models, `calculateRating`, `sortByRating`, `getRatingLevel`, `TaskRepositoryPort`, `TaskStore`
+- `src/app/infrastructure/**` — `LocalStorageTaskRepository`, `InMemoryTaskRepository` (mock)
+- `src/app/application/**` — `TaskPage`, `TaskTable`, `TaskFormDialog`, `BreakDownDialog`, `TaskFacade`
+- `acceptance-criteria.md` — update AC-6.6, AC-7.1, AC-7.4
+
+## Decisions
+
+- Break down **replaces** the source task; no `parentId`, no hierarchy in the model.
+- Edit + delete are in scope.
+- Criteria are entered with `mat-slider` (0–5, discrete) plus textual label; the AC doc's select-based wording gets updated.
+- Hover is driven by a component signal (`hoveredId`) so it is assertable in jsdom; the actual fade is pure SCSS.
+- Tie-break for equal ratings: older `createdAt` first (deterministic ordering for AC-2.2).
+- Out of scope: search/filter, drag & drop reordering, undo, task states (done/open), import/export, i18n (UI is English).
+
+## Further Considerations
+
+1. Sub-tasks currently inherit nothing from the source task. Option A: start each sub-task row empty (current plan). Option B: prefill the first row with the source task's title and criteria as a starting point.
+2. Table interactions: Option A: rely purely on rating sorting (current plan). Option B: additionally enable `matSort` on the columns — cheap with Material, but AC-1.3/AC-6.3 would need a "default sort" clarification.
+3. Color application: Option A: tint the whole row background (current plan). Option B: only a colored rating chip/badge per row — better contrast, weaker visual scanning.

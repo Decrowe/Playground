@@ -1,1 +1,79 @@
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@use 'sass:map';
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}
+
+// Use Material's theming API to adjust the table's own tokens (header/row text and divider
+// color) instead of hand-rolled CSS selectors.
+@include mat.table-overrides((
+  header-headline-color: var(--mat-sys-on-surface-variant),
+  row-item-label-text-color: var(--mat-sys-on-surface),
+  row-item-outline-color: var(--mat-sys-outline-variant),
+));
+
+$rating-levels: (
+  very-low: (accent: #d32f2f, bg: #fdecea, fg: #8c1d18),
+  low: (accent: #ef6c00, bg: #fdf1e6, fg: #9a4a06),
+  medium: (accent: #f9a825, bg: #fef8e4, fg: #7a5b05),
+  high: (accent: #7cb342, bg: #eef7e6, fg: #33590f),
+  very-high: (accent: #2e7d32, bg: #e6f4ea, fg: #1b4620),
+);
+
+:root {
+  @each $level, $colors in $rating-levels {
+    --rating-#{$level}: #{map.get($colors, accent)};
+  }
+}
+
+// Pastel backgrounds with dark, high-contrast text plus a solid accent bar for quick scanning.
+// Table rows additionally need the `tr` element-type selector: Angular Material's own
+// `.mat-mdc-row { background: inherit; }` rule has the same class specificity and is injected
+// into <head> after our global stylesheet, so a plain `.rating--*` class alone loses the cascade.
+@each $level, $colors in $rating-levels {
+  .rating--#{$level} {
+    background-color: map.get($colors, bg);
+    color: map.get($colors, fg);
+    border-left: 4px solid var(--rating-#{$level});
+  }
+
+  tr.rating--#{$level} {
+    background-color: map.get($colors, bg);
+    color: map.get($colors, fg);
+  }
+}
+
 /* You can add global styles to this file, and also import other style files */

@@ -1,11 +1,13 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { routes } from './app.routes';
+import { TASK_REPOSITORY } from './domain/ports/task-repository.port';
+import { LocalStorageTaskRepository } from './infrastructure/local-storage-task.repository';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes)
+    provideNoopAnimations(),
+    { provide: TASK_REPOSITORY, useClass: LocalStorageTaskRepository }
   ]
 };

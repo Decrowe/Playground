@@ -1,10 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
+import { InMemoryTaskRepository } from './infrastructure/in-memory-task.repository';
+import { TASK_REPOSITORY } from './domain/ports/task-repository.port';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
+      providers: [{ provide: TASK_REPOSITORY, useValue: new InMemoryTaskRepository() }]
     }).compileComponents();
   });
 
@@ -14,10 +17,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('renders the task page', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, Playground');
+    expect(compiled.querySelector('app-task-page')).toBeTruthy();
   });
 });

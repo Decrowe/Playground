@@ -159,6 +159,50 @@ describe('TaskTable', () => {
     expect(ratingCell.textContent?.trim()).toBe('15');
   });
 
+  it('offers the three row actions in the overflow menu', () => {
+    const fixture = createFixture([leaf(TASK_A)]);
+    const breakDownIds: string[] = [];
+    const editIds: string[] = [];
+    const completeIds: string[] = [];
+    fixture.componentInstance.breakDown.subscribe((id) => breakDownIds.push(id));
+    fixture.componentInstance.edit.subscribe((id) => editIds.push(id));
+    fixture.componentInstance.complete.subscribe((id) => completeIds.push(id));
+
+    (fixture.nativeElement.querySelector('[data-testid="mobile-actions-button"]') as HTMLElement).click();
+    fixture.detectChanges();
+
+    const items = document.querySelectorAll<HTMLButtonElement>('.mat-mdc-menu-item');
+    expect(Array.from(items).map((item) => item.textContent?.trim())).toEqual([
+      'call_splitBreak down',
+      'editEdit',
+      'check_circleComplete'
+    ]);
+
+    items[0].click();
+    items[1].click();
+    items[2].click();
+
+    expect(breakDownIds).toEqual(['a']);
+    expect(editIds).toEqual(['a']);
+    expect(completeIds).toEqual(['a']);
+  });
+
+  it('disables the overflow menu edit action for an origin task with subtasks', () => {
+    const parentNode: TaskNode = {
+      task: TASK_A,
+      rating: 7.5,
+      criteria: { expectation: 3, timeEffort: 3, workEffort: 3 },
+      children: [leaf(TASK_B)]
+    };
+    const fixture = createFixture([parentNode]);
+
+    (fixture.nativeElement.querySelector('[data-testid="mobile-actions-button"]') as HTMLElement).click();
+    fixture.detectChanges();
+
+    const items = document.querySelectorAll<HTMLButtonElement>('.mat-mdc-menu-item');
+    expect(items[1].disabled).toBe(true);
+  });
+
   it('re-renders when the input changes (OnPush)', () => {
     const fixture = createFixture([leaf(TASK_A)]);
     fixture.componentRef.setInput('nodes', [leaf(TASK_B)]);

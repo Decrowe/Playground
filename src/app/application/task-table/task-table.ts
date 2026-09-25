@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 
 import { criterionIcon, criterionLabel, ratingLevelClass } from '../../domain/rating';
@@ -8,7 +9,7 @@ import { TaskNode } from '../../domain/task-tree';
 
 @Component({
   selector: 'app-task-table',
-  imports: [NgTemplateOutlet, MatButtonModule, MatIconModule, TitleCasePipe],
+  imports: [NgTemplateOutlet, MatButtonModule, MatIconModule, MatMenuModule, TitleCasePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './task-table.html',
   styleUrl: './task-table.scss'

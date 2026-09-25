@@ -126,6 +126,17 @@ describe('TaskPage', () => {
     expect(store.tasks().some((task) => task.id === 'a' && task.completed)).toBe(true);
   });
 
+  it('centers the card while empty and re-centers it after the last task is completed', () => {
+    const { fixture } = createFixture([TASK_A]);
+    const content = fixture.nativeElement.querySelector('.page-content') as HTMLElement;
+    expect(content.classList.contains('page-content--empty')).toBe(false);
+
+    (fixture.nativeElement.querySelector('[data-testid="complete-task-button"]') as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(content.classList.contains('page-content--empty')).toBe(true);
+  });
+
   it('removes all tasks after confirming the reset', async () => {
     const { fixture } = createFixture([TASK_A, TASK_C], true);
     (fixture.nativeElement.querySelector('[data-testid="reset-tasks-button"]') as HTMLElement).click();

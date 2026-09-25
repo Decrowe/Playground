@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -15,4 +15,5 @@ import { TaskTable } from '../task-table/task-table';
 })
 export class TaskPage {
   protected readonly facade = inject(TaskFacade);
+  protected readonly isEmpty = computed(() => this.facade.tasks().length === 0);
 }

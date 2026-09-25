@@ -127,6 +127,35 @@
         >
           <mat-icon>check_circle</mat-icon>
         </button>
+        <button
+          mat-icon-button
+          type="button"
+          class="mobile-actions-trigger"
+          data-testid="mobile-actions-button"
+          [matMenuTriggerFor]="taskMenu"
+          [attr.aria-label]="'More actions for ' + node.task.title"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #taskMenu="matMenu">
+          <button mat-menu-item type="button" (click)="breakDown.emit(node.task.id)">
+            <mat-icon>call_split</mat-icon>
+            <span>Break down</span>
+          </button>
+          <button
+            mat-menu-item
+            type="button"
+            [disabled]="node.children.length > 0"
+            (click)="edit.emit(node.task.id)"
+          >
+            <mat-icon>edit</mat-icon>
+            <span>Edit</span>
+          </button>
+          <button mat-menu-item type="button" (click)="complete.emit(node.task.id)">
+            <mat-icon>check_circle</mat-icon>
+            <span>Complete</span>
+          </button>
+        </mat-menu>
       </div>
     </td>
   </tr>

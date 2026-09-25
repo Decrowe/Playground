@@ -74,6 +74,10 @@ tr[data-testid='task-row']:hover {
   gap: 4px;
 }
 
+.mobile-actions-trigger {
+  display: none;
+}
+
 .row-action {
   opacity: 0;
   visibility: hidden;
@@ -82,4 +86,38 @@ tr[data-testid='task-row']:hover {
 .row-action--visible {
   opacity: 1;
   visibility: visible;
+}
+
+// Touch/narrow viewports: the three inline row actions don't fit, so they collapse into a
+// single overflow menu and the non-title columns shrink to their icon width.
+@media (max-width: 768px), (hover: none), (pointer: coarse) {
+  .task-table th,
+  .task-table td {
+    padding: 8px 6px;
+  }
+
+  // Shrink-to-fit every column except the title, which absorbs the remaining width.
+  .task-table th:not(.title-header),
+  .task-table td:not([data-testid='task-title']) {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  [data-testid='task-title'] {
+    overflow-wrap: anywhere;
+  }
+
+  .actions-cell {
+    justify-content: flex-end;
+  }
+
+  .row-action,
+  [data-testid='edit-task-button'],
+  [data-testid='complete-task-button'] {
+    display: none;
+  }
+
+  .mobile-actions-trigger {
+    display: inline-flex;
+  }
 }

@@ -23,10 +23,12 @@
 
 .criterion-slider {
   flex: 1 1 auto;
+  min-width: 0;
 }
 
 .criterion-value {
-  flex: 0 0 100px;
+  flex: 0 0 auto;
+  min-width: 100px;
   text-align: right;
   font-weight: 500;
   white-space: nowrap;
@@ -42,4 +44,30 @@
   margin-top: 8px;
   padding: 8px 12px;
   border-radius: 8px;
+}
+
+// Narrow viewports can't fit label + slider + value on one line, so the label and value share
+// the first line and the slider spans the full width beneath them.
+@media (max-width: 600px) {
+  .criterion-row {
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    min-height: 0;
+  }
+
+  .criterion-label {
+    flex: 1 1 auto;
+  }
+
+  .criterion-value {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .criterion-slider {
+    flex: 1 0 100%;
+    order: 3;
+  }
 }

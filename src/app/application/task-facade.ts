@@ -9,6 +9,13 @@ import { BreakDownDialog } from './break-down-dialog/break-down-dialog';
 import { ConfirmDialog } from './confirm-dialog/confirm-dialog';
 import { TaskFormDialog } from './task-form-dialog/task-form-dialog';
 
+// Material caps dialogs at 80vw by default, which leaves phones with a cramped, clipped dialog.
+const DIALOG_SIZE = {
+  form: { width: '420px', maxWidth: '95vw' },
+  breakDown: { width: '560px', maxWidth: '95vw', maxHeight: '85vh' },
+  confirm: { width: '360px', maxWidth: '95vw' }
+} as const;
+
 @Injectable({ providedIn: 'root' })
 export class TaskFacade {
   readonly #store = inject(TaskStore);
@@ -19,7 +26,9 @@ export class TaskFacade {
   );
 
   async createTask(): Promise<void> {
-    const result = await firstValueFrom(this.#dialog.open(TaskFormDialog, { width: '420px' }).afterClosed());
+    const result = await firstValueFrom(
+      this.#dialog.open(TaskFormDialog, DIALOG_SIZE.form).afterClosed()
+    );
     if (result) {
       this.#store.add(result);
     }
@@ -31,7 +40,7 @@ export class TaskFacade {
       return;
     }
     const result = await firstValueFrom(
-      this.#dialog.open(TaskFormDialog, { width: '420px', data: task }).afterClosed()
+      this.#dialog.open(TaskFormDialog, { ...DIALOG_SIZE.form, data: task }).afterClosed()
     );
     if (result) {
       this.#store.update(id, result);
@@ -48,7 +57,7 @@ export class TaskFacade {
       return;
     }
     const result = await firstValueFrom(
-      this.#dialog.open(BreakDownDialog, { width: '560px', maxHeight: '80vh', data: task }).afterClosed()
+      this.#dialog.open(BreakDownDialog, { ...DIALOG_SIZE.breakDown, data: task }).afterClosed()
     );
     if (result && result.length > 0) {
       this.#store.breakDown(id, result);
@@ -59,7 +68,7 @@ export class TaskFacade {
     const confirmed = await firstValueFrom(
       this.#dialog
         .open(ConfirmDialog, {
-          width: '360px',
+          ...DIALOG_SIZE.confirm,
           data: {
             title: 'Reset all tasks',
             message: 'This removes every task and cannot be undone. Continue?',

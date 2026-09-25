@@ -11,7 +11,7 @@
   </button>
 </mat-toolbar>
 
-<main class="page-content">
+<main class="page-content" [class.page-content--empty]="isEmpty()">
   <div class="page-card">
     <app-task-table
       [nodes]="facade.tasks()"

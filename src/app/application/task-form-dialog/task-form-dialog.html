@@ -5,25 +5,20 @@
       <mat-label>Title</mat-label>
       <input matInput data-testid="field-title" formControlName="title" />
       @if (form.controls.title.invalid && form.controls.title.touched) {
-        <mat-error data-testid="validation-error">Title is required</mat-error>
+      <mat-error data-testid="validation-error">Title is required</mat-error>
       }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width">
       <mat-label>Description</mat-label>
-      <textarea
-        matInput
-        data-testid="field-description"
-        formControlName="description"
-        rows="2"
-        placeholder="Add more details (optional)"
-      ></textarea>
+      <textarea matInput data-testid="field-description" formControlName="description" rows="2"
+        placeholder="Add more details (optional)"></textarea>
     </mat-form-field>
 
     <div class="criterion-row" data-testid="field-expectation">
       <span class="criterion-label">Expectation</span>
       <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
-        <input matSliderThumb formControlName="expectation" />
+        <input matSliderThumb (touchstart)="onRemoveActiveFocus()" formControlName="expectation" />
       </mat-slider>
       <span class="criterion-value">{{ criterionLabel('expectation', form.controls.expectation.value) }}</span>
     </div>
@@ -32,7 +27,7 @@
     <div class="criterion-row" data-testid="field-time-effort">
       <span class="criterion-label">Time Effort</span>
       <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
-        <input matSliderThumb formControlName="timeEffort" />
+        <input matSliderThumb (touchstart)="onRemoveActiveFocus()" formControlName="timeEffort" />
       </mat-slider>
       <span class="criterion-value">{{ criterionLabel('timeEffort', form.controls.timeEffort.value) }}</span>
     </div>
@@ -41,7 +36,7 @@
     <div class="criterion-row" data-testid="field-work-effort">
       <span class="criterion-label">Work Effort</span>
       <mat-slider class="criterion-slider" min="0" max="5" step="1" discrete>
-        <input matSliderThumb formControlName="workEffort" />
+        <input matSliderThumb (touchstart)="onRemoveActiveFocus()" formControlName="workEffort" />
       </mat-slider>
       <span class="criterion-value">{{ criterionLabel('workEffort', form.controls.workEffort.value) }}</span>
     </div>
